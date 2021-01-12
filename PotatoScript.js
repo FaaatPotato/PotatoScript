@@ -1,4 +1,4 @@
-//api_version=2
+///api_version=2
 var script = registerScript({
     name: "PotatoSpeed",
     version: "1.1.1",
@@ -14,12 +14,12 @@ var velocity = moduleManager.getModule("Velocity");
 var blink = moduleManager.getModule("Blink");
 var Scaffold = moduleManager.getModule("Scaffold");
 var AntiBot = moduleManager.getModule("AntiBot");
-var AutoArmor = moduleManager.getModule("AutoArmor");
 var Timer = Java.type('java.util.Timer');
 var RotationUtils = Java.type('net.ccbluex.liquidbounce.utils.RotationUtils');
 var Rotation = Java.type('net.ccbluex.liquidbounce.utils.Rotation');
 
 var matrixshit;
+var nosex;
 
 function setTimeout(func, milliseconds) {
     var timer = new Timer("setTimeout", true);
@@ -208,7 +208,7 @@ script.registerModule({
 		FlyMode: Setting.list({
 			name: "FlyMode",
 			default: "MatrixBoatNew",
-			values: ["Matrix1Old", "Matrix2Old", "BoatMatrixNew", "Glide"]
+			values: ["Matrix1Old", "Matrix2Old", "BoatMatrixNew", "Boat0"]
 		}),
 		FallDistance: Setting.float({
 			name: "FallDistance",
@@ -232,8 +232,8 @@ script.registerModule({
             name: "AutoSneak",
             default: true
 		}),
-        BoatJartex: Setting.boolean({
-            name: "BoatJartex",
+        BoatJartexTimer: Setting.boolean({
+            name: "BoatJartexTimer",
             default: true
 		}),
         DisableVelocity: Setting.boolean({
@@ -271,12 +271,12 @@ script.registerModule({
     	Chat.print("§8§l[§c§lPotatoScript§8]§7 This script is for Matrix §c§lbelow ver 6.0.0");
     	}
     	if (module.settings.FlyMode.get() == "BoatMatrixNew") {
-        Chat.print("§8§l[§c§lPotatoScript§8]§7 This mode requires §c§lTNT");
+        Chat.print("§8§l[§c§lPotatoScript§8]§7 This mode is up do date!");
         }
     	}
     });
     module.on("disable", function () {
-    	japaner = 0;
+    	nosex = 0;
     	mc.timer.timerSpeed = 1;
 		mc.gameSettings.keyBindForward.pressed = false;
 		mc.gameSettings.keyBindSprint.pressed = false;
@@ -343,7 +343,7 @@ script.registerModule({
     		if (module.settings.AutoSneak.get()) {
     		mc.gameSettings.keyBindSneak.pressed = true;
     		}
-    		if (module.settings.BoatJartex.get()) {
+    		if (module.settings.BoatJartexTimer.get()) {
     		mc.timer.timerSpeed = 0.3;
     		}
     		matrixshit = 1;
@@ -362,13 +362,11 @@ script.registerModule({
     		module.settings.MotionNoFall.set(false);
     		module.settings.AutoJump.set(false);
     		break;
-    	case "Glide":
-    		if (mc.thePlayer.onGround) {
-        		mc.thePlayer.sendQueue.addToSendQueue(new C03(true));
-    		}
-    		if (mc.thePlayer.fallDistance > 3) {
-    		if (mc.thePlayer.ticksExisted % 4 == 0) {mc.thePlayer.motionY = -.2 mc.thePlayer.motionY = 1;}
-    		}
+    	case "Boat0":
+    	if (!mc.thePlayer.isRiding()) {
+        mc.thePlayer.sendQueue.addToSendQueue(new C03(true));
+        mc.thePlayer.motionY *= 0.0;
+        }	
     		break;
     	}		
     });
@@ -514,7 +512,6 @@ script.registerModule({
     	moduleManager.getModule("Scaffold").getValue("SilentRotation").set(true);
     	moduleManager.getModule("Scaffold").getValue("KeepRotation").set(true);
     	moduleManager.getModule("Scaffold").getValue("KeepRotationLength").set(20);
-    	moduleManager.getModule("Scaffold").getValue("StaticPitchOffset").set(70.00);
     	moduleManager.getModule("Scaffold").getValue("xzRange").set(0.20);
     	moduleManager.getModule("Scaffold").getValue("yRange").set(0.80);
     	moduleManager.getModule("Scaffold").getValue("SearchAccuracy").set(8);
