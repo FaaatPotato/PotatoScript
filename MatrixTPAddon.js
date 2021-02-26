@@ -13,35 +13,52 @@ var Blocks = Java.type('net.minecraft.init.Blocks');
 var MovementUtils = Java.type("net.ccbluex.liquidbounce.utils.MovementUtils");
 var Teleport = moduleManager.getModule("Teleport");
 
+	function setTimeout(func, milliseconds) {
+  	    var timer = new Timer("setTimeout", true);
+  	    timer.schedule(function () {
+  	        func();
+  	    }, milliseconds);
+
+  	    return timer;
+  	}
+
 script.registerModule({
     name: "MatrixTPAddon",
     description: "It lets you teleport on matrix on all Y cords (no longer important wich y u select!!! :D)",
     category: "Fun",
-    settings: {}
+    settings: {
+    	DisableOnDamage: Setting.boolean({
+            name: "DisableOnDamage",
+            default: true
+		}),
+    }
 
 }, function (module) {
     module.on("enable", function () {
-    timer = 0;
     });
+    
     module.on("disable", function () {
    
     });
     module.on("update", function () {
+    if (module.settings.DisableOnDamage.get()) {
+    if (mc.thePlayer.hurtTime > 0 && Teleport.getState() == true) {
+    Teleport.setState(false);	
+    }	
+    }
+    
     if (Teleport.getState() == true) {
-    sendY = true;	
-    }
-    if (mc.gameSettings.keyBindSneak.pressed && Teleport.getState() == true && sendY == true) {	
-    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 20, mc.thePlayer.posZ, false));	
-    timer += 1;
-    }
     
-    if (timer > 100) {
-    sendY = false;
-    } 
-    
-    if (Teleport.getState() == false) {
-    timer = 0;	
     sendY = true;
+    isLegitY = mc.thePlayer.posY;	
+    
+    if (mc.gameSettings.keyBindSneak.pressed && sendY == true) {		
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 15, mc.thePlayer.posZ, false));	
+    }
+    }
+    
+    if (Teleport.getState() == true && mc.thePlayer.posY > isLegitY+15 || mc.thePlayer.posY > isLegitY-15) {	
+    sendY = false;
     }
     }); 
 });
