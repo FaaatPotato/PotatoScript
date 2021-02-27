@@ -27,33 +27,50 @@ script.registerModule({
     description: "It lets you teleport on matrix on all Y cords (no longer important wich y u select!!! :D)",
     category: "Fun",
     settings: {
-    	DisableOnDamage: Setting.boolean({
-            name: "DisableOnDamage",
+		PacketY: Setting.float({
+			name: "PacketY",
+			default: 50,
+			min:30,
+			max:100
+		}),
+    	CancelOnDamage: Setting.boolean({
+            name: "CancelOnDamage",
             default: true
+		}),
+    	AntiKick: Setting.boolean({
+            name: "AntiKick",
+            default: false
 		}),
     }
 
 }, function (module) {
-    module.on("enable", function () {
+    module.on("enable", function () {	
     });
     
     module.on("disable", function () {
    
     });
     module.on("update", function () {
-    if (module.settings.DisableOnDamage.get()) {
+    	
+    if (Teleport.getState() == true && module.settings.AntiKick.get() && mc.gameSettings.keyBindSneak.pressed) {
+    setTimeout(function () {
+    mc.gameSettings.keyBindSneak.pressed = false;	
+    },3500);
+    }	
+    	
+    if (module.settings.CancelOnDamage.get() && mc.gameSettings.keyBindSneak.pressed) {
     if (mc.thePlayer.hurtTime > 0 && Teleport.getState() == true) {
-    Teleport.setState(false);	
+    mc.gameSettings.keyBindSneak.pressed = false;
     }	
     }
     
     if (Teleport.getState() == true) {
-    
+    	
     sendY = true;
     isLegitY = mc.thePlayer.posY;	
     
     if (mc.gameSettings.keyBindSneak.pressed && sendY == true) {		
-    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 15, mc.thePlayer.posZ, false));	
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + module.settings.PacketY.get(), mc.thePlayer.posZ, false));	
     }
     }
     
