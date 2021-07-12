@@ -2,34 +2,38 @@
 var script = registerScript({
     name: "Jartex Script",
     version: "1.0",
-    authors: ["FaaatPotato, liulihaocai"]
+    authors: ["FaaatPotato"]
 });
 
-//Credits: liulihaocai made the AutoL i modified it a bit so you can use it on Jartex! 
+//Thanks @Anonzme for the functions that are needed for the AutoUpdate! <3 (I got these from ScriptCloud thats sum amazing work!)
+//Credits: @liulihaocai made the AutoL I use it bc im laizy ok
+//Also thanks to @CzechHek for helping me with problems i had in the past <3
 
+var C05 = Java.type('net.minecraft.network.play.client.C03PacketPlayer.C05PacketPlayerLook')
 var C03 = Java.type("net.minecraft.network.play.client.C03PacketPlayer");
 var C04 = Java.type("net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition");
-var TitsBest = Java.type("net.minecraft.network.play.client.C03PacketPlayer.C06PacketPlayerPosLook");
+var C08 = Java.type("net.minecraft.network.play.client.C08PacketPlayerBlockPlacement");
 var HentaiPacket = Java.type("net.minecraft.network.play.server.S02PacketChat");
 var Amanee = Java.type('net.minecraft.network.play.server.S12PacketEntityVelocity');
 var BlockPos = Java.type('net.minecraft.util.BlockPos');
-var MovementUtils = Java.type("net.ccbluex.liquidbounce.utils.MovementUtils");
+var thePlayer = Java.type("net.ccbluex.liquidbounce.utils.MovementUtils");
 var Block = Java.type('net.minecraft.block.Block');
+var Blocks = Java.type('net.minecraft.init.Blocks');
 var S08 = Java.type('net.minecraft.network.play.server.S08PacketPlayerPosLook');
+var RotationUtils = Java.type('net.ccbluex.liquidbounce.utils.RotationUtils');
+var Rotation = Java.type('net.ccbluex.liquidbounce.utils.Rotation');
+var DCT = Java.type("net.minecraft.network.login.server.S00PacketDisconnect");
+var Regen = Java.type("net.minecraft.network.play.server.S06PacketUpdateHealth");
 
 var FreeCam = moduleManager.getModule("FreeCam");
 var Fly = moduleManager.getModule("Fly");
-var KA = moduleManager.getModule("KillAura");
-var IC = moduleManager.getModule("InventoryCleaner");
-var AA = moduleManager.getModule("AutoArmor");
-var CS = moduleManager.getModule("ChestStealer");
-var CA = moduleManager.getModule("ChestAura");
+var Reach = moduleManager.getModule("Reach");
 var Teleport = moduleManager.getModule("Teleport");
 var Spammer = moduleManager.getModule("Spammer");
 
 function vClip(d) {
-	   mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + d, mc.thePlayer.posZ);
-	}
+mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + d, mc.thePlayer.posZ);
+}
 
 function setTimeout(func, milliseconds) {
     var timer = new Timer("setTimeout", true);
@@ -44,23 +48,68 @@ Math.rad = function(deg) {
     return deg * Math.PI / 180;
 }
 
-function rndm(min,max) {
+function r(min,max) {
     return Math.floor(Math.random()*(max-min+1)+min);
-} 
+}
 
 function setYeet(_yeet) {
-	var playerYaw = Math.radians(mc.thePlayer.rotationYaw);
+	var playerYaw = Math.rad(mc.thePlayer.rotationYaw);
 	mc.thePlayer.motionX = _yeet * -Math.sin(playerYaw);
 	mc.thePlayer.motionZ = _yeet * Math.cos(playerYaw);
 }
 
-var LD = ['LOBBY'];
-var GD = ['seconds'];
-var GD2 = ['SWT'];
-var GD3 = ['BW1'];
-var GD4 = ['BW2'];
-var GD5 = ['BW3'];
-var GD6 = ['BW4'];
+var url = "https://raw.githubusercontent.com/FaaatPotato/Scripts/main/Jartex%20Script.js";
+var name = "JartexScript";
+
+var URL = Java.type("java.net.URL");
+var BufferedReader = Java.type("java.io.BufferedReader");
+var InputStreamReader = Java.type("java.io.InputStreamReader");
+var FileOutputStream = Java.type("java.io.FileOutputStream");
+var File = Java.type("java.io.File");
+
+function getData(url) {
+	
+    var data = "";
+    var connection = new URL(url);
+    var http = connection.openConnection();
+    http.setRequestMethod("GET");
+    http.setRequestProperty("User-Agent", "Mozilla/5.0");
+    var stream = http.getInputStream();
+    var input = new InputStreamReader(stream, "utf-8");
+    var bufferedReader = new BufferedReader(input);
+    var inputLine;
+    while ((inputLine = bufferedReader.readLine()) != null)
+		data += "\n" + inputLine;
+    input.close();
+    bufferedReader.close();
+    return data;
+}
+
+function createNewFile(name) {
+	var File = Java.type("java.io.File");
+	var a = new File(mc.mcDataDir, "LiquidBounce-1.8");
+	var b = new File(a, "scripts");
+	(new File(b, name)).createNewFile();
+}
+
+function writeIn(name, msg) {
+	try {
+		var msg = getData(url);
+		var a = new File(mc.mcDataDir, "LiquidBounce-1.8");
+		var b = new File(a, "scripts");
+		var f = new File(b, name);
+		var out = new FileOutputStream(f);
+		out.write(msg.getBytes());
+		out.close();
+	} catch (err) {
+		Chat.print("Error: " + err);
+	}
+}
+
+var homeSelected;
+var X;
+var Y;
+var Z;
 
 script.registerModule({
     name: "JartexManager",
@@ -68,109 +117,124 @@ script.registerModule({
     category: "Fun",
     tag: "JS",
     settings: {
-        LobbySpeed: Setting.boolean({
-            name: "LobbySpeed",
+        B73: Setting.boolean({
+            name: "LoadConfigB73",
             default: false
 		}),
-        OnOff: Setting.boolean({
-            name: "ToggleModules",
+        B72: Setting.boolean({
+            name: "LoadConfigB72",
             default: false
 		}),
-        L1: Setting.boolean({
+        U: Setting.boolean({
+            name: "DownloadCurrent",
+            default: false
+		}),
+        x: Setting.boolean({
             name: " ",
             default: false
 		}),
-        SW: Setting.boolean({
-            name: "ConfigSW",
+        SetTP: Setting.boolean({
+            name: "SetHomePoint",
             default: false
 		}),
-        BW: Setting.boolean({
-            name: "ConfigBW",
+        TP: Setting.boolean({
+            name: "TPToHomePoint",
             default: false
 		}),
-        L2: Setting.boolean({
+        s: Setting.boolean({
             name: " ",
             default: false
 		}),
-        ON: Setting.boolean({
-            name: "ON (Turns sum modules on)",
+        HomePoint: Setting.text({
+            name: "HomePoint",
+            default: ""
+        }),
+        Reset: Setting.boolean({
+            name: "ResetAfterTP",
             default: false
 		}),
-        OFF: Setting.boolean({
-            name: "OFF (Turns sum modules off)",
-            default: false
+        Key: Setting.boolean({
+            name: "UseKeyBinds",
+            default: true
 		}),
     }
 
 }, function (module) {
     module.on("enable", function () {
-    isLobby = false;
     });
     module.on("disable", function () {
-
+    cancel = false;
     });
     module.on("packet", function (e) {
     var packet = e.getPacket();
-    if (packet instanceof HentaiPacket) {
-    	if(packet.getChatComponent().getUnformattedText().contains(LD[parseInt(Math.random()*LD.length)])) {
-    	isLobby = true;
-    	}
-    	if(packet.getChatComponent().getUnformattedText().contains(GD[parseInt(Math.random()*GD.length)]) || packet.getChatComponent().getUnformattedText().contains(GD2[parseInt(Math.random()*GD2.length)]) || packet.getChatComponent().getUnformattedText().contains(GD3[parseInt(Math.random()*GD3.length)]) || packet.getChatComponent().getUnformattedText().contains(GD4[parseInt(Math.random()*GD4.length)]) || packet.getChatComponent().getUnformattedText().contains(GD5[parseInt(Math.random()*GD5.length)]) || packet.getChatComponent().getUnformattedText().contains(GD6[parseInt(Math.random()*GD6.length)])) {
-    	isLobby = false;
-    }
+    if (packet instanceof C04 && homeSelected == true && module.settings.TP.get() && mc.thePlayer.isInWeb) {
+    packet.x = X
+    packet.y = Y
+    packet.z = Z
     }
     });
-    module.on("update", function () {
-    if (module.settings.ON.get()) {
-        KA.setState(true);
-        IC.setState(true);
-        AA.setState(true);
-        CA.setState(true);
-        CS.setState(true);	
-        module.settings.ON.set(false);
+    module.on("update", function () {		
+    	
+    if (module.settings.U.get()) {
+    createNewFile(name + ".js;	
+    writeIn(name + ".js;
+    module.settings.U.set(false);
+    Chat.print("§8§l[§c§lJS§8§l]");
+    Chat.print("§8§l[§c§lJS§8§l]§7 type §8.scriptmanager reload§7 to reload the script!");
+    Chat.print("§8§l[§c§lJS§8§l]§7 the old script §8has been updated");
+    Chat.print("§8§l[§c§lJS§8§l]");
     }	
-    if (module.settings.OFF.get()) {
-        KA.setState(false);
-        IC.setState(false);
-        AA.setState(false);
-        CA.setState(false);
-        CS.setState(false);	
-        module.settings.OFF.set(false);
-    }
-    if (isLobby == true && module.settings.LobbySpeed.get()) {
-    mc.timer.timerSpeed = 4;	
+    	
+    if (module.settings.TP.get() && !mc.thePlayer.isInWeb) {
+    module.settings.TP.set(false);	
+    Chat.print("§8§l[§c§lJS§8§l]§7 You are not in a§c§l Web");
     }	
-    if (isLobby == false && module.settings.LobbySpeed.get()) {
-    mc.timer.timerSpeed = 1;	
+    	
+    if (module.settings.SetTP.get()) {
+    X = mc.thePlayer.posX;
+    Y = mc.thePlayer.posY;
+    Z = mc.thePlayer.posZ;	
+    homeSelected = true;	
+    module.settings.SetTP.set(false);
+    module.settings.HomePoint.set(X+", "+Y+", "+Z)
+    Chat.print("§8§l[§c§lJS§8§l]§7 Homepoint set to §8"+X+"§7, §8"+Y+"§7, §8"+Z);
+    }	
+    
+    if (homeSelected == true && mc.thePlayer.posX == X && mc.thePlayer.posZ == Z && module.settings.TP.get()) {
+    module.settings.TP.set(false);
+    if (module.settings.Reset.get()) {
+    homeSelected = false;	
+    module.settings.HomePoint.set("No home selected!");
     }
-    if (module.settings.LobbySpeed.get() == false) {
-    mc.timer.timerSpeed = 1;	
     }
-    if (isLobby == true && module.settings.OnOff.get()) {
-    KA.setState(false);
-    IC.setState(false);
-    AA.setState(false);
-    CA.setState(false);
-    CS.setState(false);
-    }
-    if (isLobby == false && module.settings.OnOff.get()) {
-    KA.setState(true);
-    IC.setState(true);
-    AA.setState(true);
-    CA.setState(true);
-    CS.setState(true);	
-    }
-    if (module.settings.BW.get()) {
-    commandManager.executeCommands(".config load https://raw.githubusercontent.com/FaaatPotato/Configs/main/JartexBW.txt");
-    module.settings.BW.set(false);
+   
+    if (module.settings.B73.get()) {
+    commandManager.executeCommands(".config load https://raw.githubusercontent.com/FaaatPotato/Configs/main/JartexB73.txt");
+    module.settings.B73.set(false);
     }
     
-    if (module.settings.SW.get()) {
-    commandManager.executeCommands(".config load https://raw.githubusercontent.com/FaaatPotato/Configs/main/JartexSW.txt");
-    module.settings.SW.set(false);
+    if (module.settings.B72.get()) {
+    commandManager.executeCommands(".config load https://raw.githubusercontent.com/FaaatPotato/Configs/main/JartexB72.txt");
+    module.settings.B72.set(false);
+    }
+    });
+    
+    module.on("key", function (e) {
+    key = e.getKey();
+    if (module.settings.Key.get()) {
+    if (key == 210) {
+    module.settings.SetTP.set(true);	
+    }
+    if (key == 211) {
+    module.settings.TP.set(true);	
+    }
     }
     });
 });
+
+var c2;
+var c1;
+
 script.registerModule({
     name: "AutoPhase",
     description: "Phases your dick through walls",
@@ -181,35 +245,51 @@ script.registerModule({
 
 }, function (module) {
     module.on("enable", function () {
-
+    c1 = false;
+    c2 = false;
     });
     module.on("disable", function () {
 
     });
     module.on("update", function () {	
     if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 3, mc.thePlayer.posZ)).getBlock() == Block.getBlockById(20)) {
-        
+    if (mc.thePlayer.ticksExisted % 20 == 0) {
+    c1 = true;
+    }
+    } else {
+    c1 = false;	
+    } 
+    
+    if (c1 == true) {
         mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 4, mc.thePlayer.posZ, true));	
         mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 4, mc.thePlayer.posZ, true));
-	    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 15, mc.thePlayer.posZ, false));
+	    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY - 0.1, mc.thePlayer.posZ, false));
 	    
 	    mc.gameSettings.keyBindLeft.pressed = false;
 	    mc.gameSettings.keyBindForward.pressed = false;
 	    mc.gameSettings.keyBindRight.pressed = false;
 	    mc.gameSettings.keyBindBack.pressed = false;
-	    mc.gameSettings.keyBindJump.pressed = false;
-        } 
+	    mc.gameSettings.keyBindJump.pressed = false;	
+    }
 		
 		if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 4, mc.thePlayer.posZ)).getBlock() == Block.getBlockById(166)) {
-	    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 5, mc.thePlayer.posZ, true));	
-	    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 5, mc.thePlayer.posZ, true));	
-	    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 15, mc.thePlayer.posZ, false));	
-	    
-	    mc.gameSettings.keyBindLeft.pressed = false;
-	    mc.gameSettings.keyBindForward.pressed = false;
-	    mc.gameSettings.keyBindRight.pressed = false;
-	    mc.gameSettings.keyBindBack.pressed = false;
-	    mc.gameSettings.keyBindJump.pressed = false;
+		if (mc.thePlayer.ticksExisted % 20 == 0) {
+        c2 = true;
+		}
+		} else {
+		c2 = false;	
+		}
+		
+		if (c2 == true) {
+		    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 5, mc.thePlayer.posZ, true));	
+		    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 5, mc.thePlayer.posZ, true));	
+		    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY - 0.1, mc.thePlayer.posZ, false));	
+		    
+		    mc.gameSettings.keyBindLeft.pressed = false;
+		    mc.gameSettings.keyBindForward.pressed = false;
+		    mc.gameSettings.keyBindRight.pressed = false;
+		    mc.gameSettings.keyBindBack.pressed = false;
+		    mc.gameSettings.keyBindJump.pressed = false;	
 		}
     });
 });
@@ -218,7 +298,12 @@ script.registerModule({
     description: "Makes you jesus",
     category: "Fun",
     tag: "JS",
-    settings: {}
+    settings: {
+        b: Setting.boolean({
+            name: "Boost",
+            default: false
+		}),	
+    }
 
 }, function (module) {
     module.on("enable", function () {
@@ -227,69 +312,16 @@ script.registerModule({
     mc.timer.timerSpeed = 1;
     });
     module.on("update", function () {
-    if (mc.thePlayer.isInWater()) {
-    if (MovementUtils.isMoving() && !mc.gameSettings.keyBindSneak.pressed) {
-    mc.thePlayer.motionY = 0.0;	
-    } 
-    if (!MovementUtils.isMoving()) {
-    if (mc.thePlayer.ticksExisted % 12 == 0) {
-    mc.thePlayer.motionY = 0.25;	
-    }
-    }
-        
-        if (mc.gameSettings.keyBindForward.pressed) {
-        var dir = Math.rad(mc.thePlayer.rotationYaw);
-        mc.thePlayer.motionX += -Math.sin(dir) * 0.07;
-        mc.thePlayer.motionZ += Math.cos(dir) * 0.07;	
-        }
-        if (mc.gameSettings.keyBindJump.pressed) {
-        mc.thePlayer.motionY = 0.15
-        ;
-        }
-        if (mc.gameSettings.keyBindSneak.pressed) {
-        mc.thePlayer.motionY = -0.2;	
-        }
-    }
-    });
-});
-script.registerModule({
-    name: "BoatSpeed",
-    description: "Its makes you speed like hell NO VOID",
-    category: "Fun",
-    tag: "JS",
-    settings: {
-		Speed: Setting.float({
-			name: "Speed",
-			default: 5,
-			min:1,
-			max:6
-		}),
-    }
+    if (mc.thePlayer.isInWater() && !mc.thePlayer.isCollidedHorizontally) {
 
-}, function (module) {
-    module.on("enable", function () {
-    moduleManager.getModule("Fly").getValue("Mode").set("Minesecure");
-    });
-    module.on("disable", function () {
-    Fly.setState(false);
-    mc.gameSettings.keyBindSneak.pressed = false;	
-    });
-    module.on("packet", function (e) {
-    var packet = e.getPacket();
-    if (mc.thePlayer.isRiding()) {
-    if (packet instanceof C04 || packet instanceof C03) {
-    e.cancelEvent();		
-    }	
+    mc.thePlayer.motionY = 0;
+
+    if (mc.gameSettings.keyBindForward.pressed && module.settings.b.get()) {
+    mc.timer.timerSpeed = 1.05;	
+    var dir = Math.rad(mc.thePlayer.rotationYaw);
+    mc.thePlayer.motionX += -Math.sin(dir) * 0.07;
+    mc.thePlayer.motionZ += Math.cos(dir) * 0.07;	
     }
-    });
-    module.on("update", function () {
-    if (mc.thePlayer.ticksExisted % 10 == 0) {
-    mc.gameSettings.keyBindSneak.pressed = false;	
-    }	
-    moduleManager.getModule("Fly").getValue("Vanillaspeed").set(module.settings.Speed.get());	
-    if (mc.thePlayer.isRiding()) {	
-    Fly.setState(true);	
-    mc.gameSettings.keyBindSneak.pressed = true;
     }
     });
 });
@@ -301,6 +333,9 @@ var AdL = ['u got killed? Watch this:', 'ha u bad! Your reward:', 'man ur bad! H
 
 var HF = ['im not hacking im just testing anticheats. ALL 100% HARAM FREE!', 'sigma best client 100% HARAM FREE', 'all other CLIENTS 100% HARAM - ONLY SIGMA BEST', '10000% Haram Free hacks all legit proof', 'sigma best client 2021 virus free no BTC miner', 'sigma user is haram free download now the best sex client'];
 
+var SAUCE = ['oh sorry bro! Watch dizz: https://wimg.rule34.xxx//images/4073/b7955655243cc132a3858dd4903b5cb9.jpeg?4624848', 'ohh you got killed? Need sum sauce? https://hanime.tv/videos/hentai/green-eyes-ane-kyun-yori-1', 'mhhmmm... i see. Just relax: https://nhentai.net/g/275085/1/', 'mhm a doctor won\'t help anymore.. try this: https://nhentai.net/g/174820/15/', 'someone said once, milfs are best: https://hanime.tv/videos/hentai/amanee-1', 'sometimes wholesum content helps... https://hanime.tv/videos/hentai/kimi-ga-suki-2', 'u need to calm down okay? Try this maybe: https://hanime.tv/videos/hentai/ane-wa-yanmama-junyuu-chuu-1', 'sometimes you just need that: https://rule34.xxx//samples/4077/sample_4d55d7241e6d55e82fc5b89f08d4808b.jpg?4629898', 'probably you just read? Read this? :3 https://nhentai.net/g/355273/'];
+
+
 	var target;
 	var EntityPlayer = Java.type('net.minecraft.entity.player.EntityPlayer');
 
@@ -311,14 +346,22 @@ var HF = ['im not hacking im just testing anticheats. ALL 100% HARAM FREE!', 'si
 	    tag: "JS",
 		settings: {
 	        Mode: Setting.list({
-	            name: "Mode",
+	            name: "LMode",
 	            default: "Normal",
-	            values: ["Normal","Advertise", "HaramFree"]
+	            values: ["Normal","Advertise", "HaramFree", "Sauce (NFSW 18+ or smth)"]
 	        }),
+	        X: Setting.boolean({
+	            name: " ",
+	            default: false
+			}),
 	        Help: Setting.boolean({
 	            name: "How to set my URL?",
 	            default: false
 			}),
+	        ad: Setting.text({
+	            name: "URL",
+	            default: ""
+	        }),
 		}
 
 	}, function (module) {
@@ -330,6 +373,9 @@ var HF = ['im not hacking im just testing anticheats. ALL 100% HARAM FREE!', 'si
 				target = event.getTargetEntity();
 			}
 	    })
+	    module.on("packet", function (e) {
+	    var packet = e.getPacket();
+	    })
 		module.on("update", function () {
 	        if (target != null) {
 	            if (target.isDead) {
@@ -337,10 +383,13 @@ var HF = ['im not hacking im just testing anticheats. ALL 100% HARAM FREE!', 'si
 	                        mc.thePlayer.sendChatMessage("!L "+target.getName()+" "+EnglishWords[parseInt(Math.random()*EnglishWords.length)] );	
 	            	        }
 	            	        if (module.settings.Mode.get() == "Advertise") {
-		                    mc.thePlayer.sendChatMessage("! "+target.getName()+" "+AdL[parseInt(Math.random()*AdL.length)]+" "+moduleManager.getModule("Spammer").getValue("message").get() );		
+		                    mc.thePlayer.sendChatMessage("! "+target.getName()+" "+AdL[parseInt(Math.random()*AdL.length)]+" "+module.settings.ad.get() );		
 	            	        }
 	            	        if (module.settings.Mode.get() == "HaramFree") {
 	            	        mc.thePlayer.sendChatMessage("! "+target.getName()+" "+HF[parseInt(Math.random()*HF.length)] );		
+	            	        }
+	            	        if (module.settings.Mode.get() == "Sauce (NFSW 18+ or smth)") {
+		            	    mc.thePlayer.sendChatMessage("! "+target.getName()+" "+SAUCE[parseInt(Math.random()*SAUCE.length)] );		
 	            	        }
 	                    }
 	                }
@@ -350,9 +399,9 @@ var HF = ['im not hacking im just testing anticheats. ALL 100% HARAM FREE!', 'si
 	        Chat.print("§8§l[§9§lL§8§l]§8 <-->");
 	        Chat.print("§8§l[§9§lL§8§l]");
 	        Chat.print("§8§l[§9§lL§8§l]§7 To set ad URL:");	
-	        Chat.print("§8§l[§9§lL§8§l]§7 set the §c§lspammer message§7 to §c§lyour URL!");
+	        Chat.print("§8§l[§9§lL§8§l]§7 set the §c§lURL§7 in settings!");
 	        Chat.print("§8§l[§9§lL§8§l]");
-	        Chat.print("§8§l[§9§lL§8§l]§8 Example: §c§l.spammer message https://hanime.tv/");
+	        Chat.print("§8§l[§9§lL§8§l]§8 Example: §c§l.JartexL URL https://hanime.tv/");
 	        Chat.print("§8§l[§9§lL§8§l]");
 	        Chat.print("§8§l[§9§lL§8§l]§8 <-->");
 	        module.settings.Help.set(false);
@@ -360,20 +409,34 @@ var HF = ['im not hacking im just testing anticheats. ALL 100% HARAM FREE!', 'si
 	    })
 	})
 
-var PW = ['ashvdz17asj!'];
 var SL = ['login'];
 var SR = ['register'];
+var sendReminder;
 
 script.registerModule({
     name: "JartexRegister",
     description: "Makes your register on jartex also login ok",
     category: "Fun",
     tag: "JS",
-    settings: {}
+    settings: {
+        pw: Setting.text({
+            name: "Password",
+            default: ""
+        }),
+        r: Setting.boolean({
+            name: "Reminder",
+            default: false
+		}),
+    }
 
 }, function (module) {
     module.on("enable", function () {
-
+    if (module.settings.pw.get() == "Potato" && module.settings.r.get()) {
+    Chat.print("§8§l[§c§lJartexReg§8§l]§7")
+    Chat.print("§8§l[§c§lJartexReg§8§l]§7 Password is set to §c§ldefault")
+    Chat.print("§8§l[§c§lJartexReg§8§l]§7 Change it with: §8.JartexRegister Password")
+    Chat.print("§8§l[§c§lJartexReg§8§l]§7")
+    }
     });
     module.on("disable", function () {
 
@@ -382,14 +445,22 @@ script.registerModule({
     var packet = event.getPacket();
     if (packet instanceof HentaiPacket) {
     if(packet.getChatComponent().getUnformattedText().contains(SR[parseInt(Math.random()*SR.length)])) {
-    mc.thePlayer.sendChatMessage("/register " +PW[parseInt(Math.random()*PW.length)] + " " +PW[parseInt(Math.random()*PW.length)]);
+    mc.thePlayer.sendChatMessage("/register " +module.settings.pw.get() + " " +module.settings.pw.get() );
     }
     if(packet.getChatComponent().getUnformattedText().contains(SL[parseInt(Math.random()*SL.length)])) {
-    mc.thePlayer.sendChatMessage("/login " +PW[parseInt(Math.random()*PW.length)] );	
+    mc.thePlayer.sendChatMessage("/login " +module.settings.pw.get() );
     }
     }
     });
+    module.on("update", function () { 
+    sendReminder = false;	
+    });
 });
+
+var Y;
+var isBoost;
+var isBoat;
+var sneakPossible;
 
 script.registerModule({
     name: "MatrixFlyz",
@@ -400,7 +471,7 @@ script.registerModule({
 		Mode: Setting.list({
 			name: "Mode",
 			default: "MatrixBoat",
-			values: ["MatrixBoat", "Jartex"]
+			values: ["MatrixBoat", "JartexOld"]
 		}),
 		Y: Setting.float({
 			name: "BoatY",
@@ -415,27 +486,46 @@ script.registerModule({
 			max:10
 		}),
         UseTimer: Setting.boolean({
-            name: "UseTimer (Only for normal fly)",
+            name: "UseTimer (Only for old fly)",
             default: false
 		}),
+	    SneakStop: Setting.boolean({
+	        name: "SneakStop",
+	        default: true
+        }),
+	    Latest: Setting.boolean({
+	        name: "LatestMatrix",
+	        default: false
+        }),
     }
 
 }, function (module) {
     module.on("enable", function () {
-    if (module.settings.Mode.get() == "Jartex" && mc.thePlayer.onGround) {
+    if (module.settings.Mode.get() == "JartexOld" && mc.thePlayer.onGround) {
     mc.thePlayer.jump();
-    }	
+    }
+    if (module.settings.Mode.get() == "Jartex") {
+    mc.timer.timerSpeed = 0.3;	
+    mc.thePlayer.jump();
+    }
     isBoat = false;
     isBoost = false;
     Y = false;
+    sneakPossible = false;
     });
     module.on("disable", function () {
     isBoat = false;
     isBoost = false;
+    mc.thePlayer.speedInAir = 0.02;
     mc.timer.timerSpeed = 1;
     });
     module.on("packet", function (e) {
     var packet = e.getPacket();
+    if (Y == true) {
+    if (module.settings.Latest.get()) {
+    mc.thePlayer.sendQueue.addToSendQueue(new C03(true));
+    }	
+    }
     if (Y == true) {
     if (packet instanceof C04) {
     e.cancelEvent();	
@@ -452,21 +542,44 @@ script.registerModule({
     if (isBoat == true) {
     mc.gameSettings.keyBindSneak.pressed = false;
     mc.thePlayer.motionY = module.settings.Y.get()
-    mc.timer.timerSpeed = 0.3;
+    mc.timer.timerSpeed = 0.1;
     isBoat = false;
     isBoost = true;
     }
     if (isBoost == true) {
+    sneakPossible = true;	
     mc.timer.timerSpeed = 1;
+    if (module.settings.Latest.get() == false) {
     var dir = Math.rad(mc.thePlayer.rotationYaw);
     mc.thePlayer.motionX += -Math.sin(dir) * module.settings.Boost.get()
-    mc.thePlayer.motionZ += Math.cos(dir) * module.settings.Boost.get()
+    mc.thePlayer.motionZ += Math.cos(dir) * module.settings.Boost.get()	
+    }
+    if (module.settings.Latest.get() == true) {
+    if (module.settings.Boost.get() < 3.35) {
+    var dir = Math.rad(mc.thePlayer.rotationYaw);
+    mc.thePlayer.motionX += -Math.sin(dir) * module.settings.Boost.get()
+    mc.thePlayer.motionZ += Math.cos(dir) * module.settings.Boost.get()		
+    }	
+    }
     isBoost = false;
+    }
+    }
+    if (sneakPossible == true && module.settings.SneakStop.get() == true) {
+    if (mc.gameSettings.keyBindSneak.pressed) {
+    mc.thePlayer.motionX = 0;
+    mc.thePlayer.motionZ = 0;
+    sneakPossible = false;
+    }	
+    }
+    if (module.settings.Latest.get() == true) {
+    if (module.settings.Boost.get() > 3.36) {
+    Chat.print("§8§l[§c§lBoatFly§8§l]§7 On latest matrix the boost maximum is §c§l3.35!");
+    module.settings.Boost.set(3.35);
     }
     }
     }
     
-    if (module.settings.Mode.get() == "Jartex") {
+    if (module.settings.Mode.get() == "JartexOld") {
     if (mc.thePlayer.fallDistance > 1) {
     Y = true;	
     if (!mc.gameSettings.keyBindJump.pressed) {
@@ -488,8 +601,474 @@ script.registerModule({
     });
 });
 
+script.registerModule({
+    name: "TPAddon",
+    description: "It lets you teleport on matrix on all Y cords (no longer important wich y u select!!! :D)",
+    category: "Fun",
+    tag: "JS",
+    settings: {
+	    Mode: Setting.list({
+			name: "Mode",
+			default: "Exploit",
+			values: ["Exploit", "Slab", "Old"]
+		}),
+	    Sex: Setting.boolean({
+	        name: "Wich blocks are possible to exploit?",
+	        default: false
+        }),
+    }
 
+}, function (module) {
+    module.on("enable", function () {
+    });
+    
+    module.on("disable", function () {
+    mc.timer.timerSpeed = 1;
+    });
+    module.on("packet", function (e) {
+    var packet = e.getPacket();
+    });
+    module.on("update", function () {	
+    	
+    if (module.settings.Sex.get()) {
+    module.settings.Sex.set(false);
+    Chat.print("§8§l[§c§lTPAddon§8§l]§8 --");
+    Chat.print("§8§l[§c§lTPAddon§8§l]");
+    Chat.print("§8§l[§c§lTPAddon§8§l]§7 List of §c§lblocks and other§7:");
+    Chat.print("§8§l[§c§lTPAddon§8§l]");
+    Chat.print("§8§l[§c§lTPAddon§8§l]§8 Ladder§7,§8 Web§7,§8 Boat§7");
+    Chat.print("§8§l[§c§lTPAddon§8§l]");
+    Chat.print("§8§l[§c§lTPAddon§8§l]§8 --");
+    }	
+    	
+    if (module.settings.Mode.get() == "Slab") {
+    if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 0.1, mc.thePlayer.posZ)).getBlock() == Block.getBlockById(126) && mc.gameSettings.keyBindSneak.pressed && Teleport.getState() == true) {
+    mc.timer.timerSpeed = 1;	
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY - 0.1, mc.thePlayer.posZ, true));
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY - 0.1, mc.thePlayer.posZ, true));
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY - 0.1, mc.thePlayer.posZ, true));
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY - 0.1, mc.thePlayer.posZ, true));
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY - 100, mc.thePlayer.posZ, true));
+    } else {
+    if (Teleport.getState() == true && mc.gameSettings.keyBindSneak.pressed) {	
+    mc.timer.timerSpeed = 1;
+    Teleport.setState(false);
+    Chat.print("§8§l[§c§lTPAddon§8§l]§c§l Arrived §7or wrong §c§lBlock/Entity§7!");
+    }
+    }
+    
+    if (!mc.gameSettings.keyBindSneak.pressed) {
+    mc.timer.timerSpeed = 1;	
+    }
+    }
+    
+    if (module.settings.Mode.get() == "Old") {
+    if (Teleport.getState() == true && mc.gameSettings.keyBindSneak.pressed) {
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 15, mc.thePlayer.posZ, false));
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 1, mc.thePlayer.posZ, true));
+    }	
+    }
+    
+    if (module.settings.Mode.get() == "Exploit") {
+    if (mc.thePlayer.isRiding() || mc.thePlayer.isInWeb || mc.thePlayer.isOnLadder()) {
+    if (Teleport.getState() == true && mc.gameSettings.keyBindSneak.pressed) {	
+    if (mc.thePlayer.isRiding()) {	
+    mc.timer.timerSpeed = 7;
+    } else {	
+    mc.timer.timerSpeed = 1;	
+    }
+    
+    if (mc.thePlayer.isRiding()) {	
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 100, mc.thePlayer.posZ, true));
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY - 0.1, mc.thePlayer.posZ, false));
+    }
+    
+    if (mc.thePlayer.isOnLadder()) {
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 100, mc.thePlayer.posZ, false));
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 100, mc.thePlayer.posZ, false));
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 100, mc.thePlayer.posZ, false));
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 100, mc.thePlayer.posZ, false));
+    }
+    
+    if (mc.thePlayer.isInWeb) {
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX + r(-0.1,0.1), mc.thePlayer.posY, mc.thePlayer.posZ + r(-0.1,0.1), true));
+    
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY - 0.1, mc.thePlayer.posZ, true));
+    
+    mc.thePlayer.sendQueue.addToSendQueue(new C04(mc.thePlayer.posX, mc.thePlayer.posY + 20, mc.thePlayer.posZ, true));
+    }
+    }
+    } else {	
+    if (mc.gameSettings.keyBindSneak.pressed && Teleport.getState() == true) {
+    Teleport.setState(false);
+    Chat.print("§8§l[§c§lTPAddon§8§l]§c§l Arrived §7or wrong §c§lBlock/Entity§7!");
+    }
+    mc.timer.timerSpeed = 1;	
+    }
+    }
+    }); 
+});
 
+var combat;
 
+script.registerModule({
+    name: "MatrixSpeedz",
+    description: "makes you fast af (feels like you turn black)",
+    category: "Fun",
+    tag: "JS",
+    settings: {
+		M: Setting.list({
+			name: "Mode",
+			default: "TimerHop",
+			values: ["TimerHop", "Test"]
+		}),
+    }
 
+}, function (module) {
+    module.on("enable", function () {
 
+    });
+    module.on("packet", function (e) {
+    var packet = e.getPacket();	
+    });
+    module.on("disable", function () {
+    mc.timer.timerSpeed = 1;
+    mc.thePlayer.speedInAir = 0.02;
+    });
+    module.on("update", function () {
+
+    if (module.settings.M.get() == "TimerHop") {
+    if (mc.thePlayer.onGround && thePlayer.isMoving()) {
+    combat = false;	
+    if (combat == false) {	
+    mc.thePlayer.speedInAir = 0.0204;	
+    mc.timer.timerSpeed = 0.65;
+    } else {
+    mc.thePlayer.speedInAir = 0.02
+    mc.timer.timerSpeed = 1;
+    }
+    mc.gameSettings.keyBindJump.pressed = true;
+    } else {
+    mc.timer.timerSpeed = 1;	
+    mc.gameSettings.keyBindJump.pressed = false;
+    }
+    	
+    if (thePlayer.isMoving() && combat == false) {
+    if (mc.thePlayer.fallDistance < 0.1) {
+    mc.timer.timerSpeed = 1.81;
+    }
+    if (mc.thePlayer.fallDistance > 0.2) {
+    mc.timer.timerSpeed = 0.42;
+    }
+    if (mc.thePlayer.fallDistance > 0.6) {
+    mc.timer.timerSpeed = 1.05;
+    mc.thePlayer.speedInAir = 0.02019
+    }
+    }
+    
+    if (mc.thePlayer.fallDistance > 1) {
+    mc.timer.timerSpeed = 1;
+    mc.thePlayer.speedInAir = 0.02;
+    }
+    }
+    
+    if (module.settings.M.get() == "Test") {
+    }
+    });
+    module.on("attack", function () {
+    if (mc.thePlayer.hurtTime > 0 && module.settings.M.get() == "TimerHop") {
+    mc.timer.timerSpeed = 1
+    mc.thePlayer.speedInAir = 0.02
+    combat = true;
+    }
+    });
+});
+
+var falseground;
+var waitFlag;
+var hasFallen;
+
+script.registerModule({
+    name: "MatrixNoFallz",
+    description: "Shitty dmg reducer",
+    category: "Fun",
+    tag: "JS",
+    settings: {
+		NM: Setting.list({
+			name: "Mode",
+			default: "Normal",
+			values: ["Normal", "MatrixPremium"]
+		}),
+		M: Setting.list({
+			name: "SetBackAction",
+			default: "wait",
+			values: ["wait", "disable"]
+		}),
+        c: Setting.boolean({
+            name: "SetBackCheck",
+            default: false
+		}),
+        nomove: Setting.boolean({
+            name: "NoMove",
+            default: true
+		}),
+    }
+
+}, function (module) {
+    module.on("enable", function () {
+    hasFallen = false;
+    waitFlag = false;
+    falseground = false;
+    Chat.print("§8§l[§c§lJS§8§l]§7 This sadly only reduces your falldmg!");
+    });
+    module.on("disable", function () {
+    hasFallen = false;
+    mc.timer.timerSpeed = 1;
+    });
+    module.on("packet", function (e) {
+    var packet = e.getPacket();
+    
+    if (module.settings.NM.get() == "MatrixPremium") {
+    if (falseground == true) {
+    if (packet instanceof C03) {
+    packet.onGround = false;	
+    }	
+    }
+    }
+    
+    if (module.settings.NM.get() == "Normal") {
+    if (hasFallen == true && waitFlag == false) {
+    if (packet instanceof C03) {	
+    packet.onGround = false;
+    mc.timer.timerSpeed = 1;
+    if (mc.thePlayer.ticksExisted % 5 == 0) {
+    packet.onGround = true;
+    packet.onGround = true;
+    }
+    }
+    } 
+    }
+    });
+    module.on("update", function () {	
+    	
+    if (module.settings.NM.get() == "Normal") {	
+    if (mc.thePlayer.onGround) {	
+    flagCheck = mc.thePlayer.posY;
+    } 
+    
+    if (mc.thePlayer.fallDistance > 4) {
+    hasFallen = true;	
+    mc.gameSettings.keyBindLeft.pressed = false;
+    mc.gameSettings.keyBindRight.pressed = false;
+    mc.gameSettings.keyBindBack.pressed = false;
+    mc.gameSettings.keyBindForward.pressed = false;
+    }
+    
+    if (hasFallen == true && !mc.theWorld.isAirBlock(new BlockPos(mc.thePlayer.posX,mc.thePlayer.posY - 0.1,mc.thePlayer.posZ))) {
+    mc.timer.timerSpeed = 1;	
+    hasFallen = false;
+    }
+    
+    if (mc.thePlayer.posY == flagCheck && hasFallen == true && module.settings.c.get()) {
+    if (mc.thePlayer.ticksExisted % 2 == 0) {	
+    Chat.print("§8§l[§c§lNoFall§8§l]§7 Detected a §c§lsetback§7!");
+    Chat.print("§8§l[§c§lNoFall§8§l]");
+    Chat.print("§8§l[§c§lNoFall§8§l]§7 You can select how the script acts.");
+    Chat.print("§8§l[§c§lNoFall§8§l]§7 Current selected is §c§l"+module.settings.M.get()+"§7!");
+    }
+    hasFallen = false;
+    if (module.settings.M.get() == "disable") {
+    module.setState(false);	
+    }
+    if (module.settings.M.get() == "wait") {
+    waitFlag = true;	
+    }
+    }
+    
+    if (module.settings.M.get() == "wait" && waitFlag == true) {
+	if (mc.thePlayer.ticksExisted % 700 == 0) {	
+	waitFlag = false;
+    Chat.print("§8§l[§c§lNoFall§8§l]§8 --");
+    Chat.print("§8§l[§c§lNoFall§8§l]");
+    Chat.print("§8§l[§c§lNoFall§8§l]§7 You can use §c§lNoFall§7 again!");
+    Chat.print("§8§l[§c§lNoFall§8§l]");
+    Chat.print("§8§l[§c§lNoFall§8§l]§8 --");
+	}
+    }
+    }
+    
+    if (module.settings.NM.get() == "MatrixPremium") {
+    if (mc.thePlayer.fallDistance > 4 && mc.theWorld.isAirBlock(new BlockPos(mc.thePlayer.posX,mc.thePlayer.posY - 0.1,mc.thePlayer.posZ))) {
+    falseground = true;	
+    }
+    
+    if (falseground == true && module.settings.nomove.get() && mc.thePlayer.fallDistance > 4 && !mc.theWorld.isAirBlock(new BlockPos(mc.thePlayer.posX,mc.thePlayer.posY - 10,mc.thePlayer.posZ))) {
+    mc.gameSettings.keyBindBack.pressed = false;
+    mc.gameSettings.keyBindRight.pressed = false;
+    mc.gameSettings.keyBindLeft.pressed = false;
+    mc.gameSettings.keyBindJump.pressed = false;	
+    mc.gameSettings.keyBindForward.pressed = false;
+    mc.thePlayer.motionX = 0;
+    mc.thePlayer.motionZ = 0;
+    }
+    
+    if (falseground == true && !mc.theWorld.isAirBlock(new BlockPos(mc.thePlayer.posX,mc.thePlayer.posY - 0.1,mc.thePlayer.posZ)) && !mc.thePlayer.isInWeb && !mc.thePlayer.isInWater() && !mc.thePlayer.isOnLadder()) {
+    mc.thePlayer.sendQueue.addToSendQueue(new C05(mc.thePlayer.rotationYaw, 91, false));
+    if (mc.thePlayer.ticksExisted % 5 == 0 && mc.thePlayer.fallDistance < 80) {
+    falseground = false;
+    }
+    if (mc.thePlayer.ticksExisted % 20 == 0 && mc.thePlayer.fallDistance > 81) {
+    falseground = false;	
+    }
+    }
+    }
+    });
+});
+
+//14ms reminded me that this shit works okkk
+
+script.registerModule({
+    name: "FastClimbz",
+    description: "Climbs you fast on ladders bc sex",
+    category: "Fun",
+    tag: "JS",
+    settings: {
+		M: Setting.list({
+			name: "Mode",
+			default: "Teleport",
+			values: ["Teleport", "Motion"]
+		}),
+		TPDistance: Setting.float({
+			name: "TPDistance",
+			default: 0.3,
+			min:0.1,
+			max:0.31
+		}),
+		MotionY: Setting.float({
+			name: "MotionY",
+			default: 3,
+			min:1,
+			max:3.6
+		}),
+    }
+
+}, function (module) {
+    module.on("enable", function () {
+
+    });
+    module.on("disable", function () {
+
+    });
+    module.on("packet", function (e) {
+    var packet = e.getPacket();
+    if (packet instanceof C03 && mc.thePlayer.isOnLadder() && mc.thePlayer.motionY > 0) {
+    packet.onGround = true;
+    }
+    });
+    module.on("update", function () {
+    if (module.settings.M.get() == "Teleport") {
+    if (mc.thePlayer.isOnLadder() && mc.gameSettings.keyBindForward.pressed && !mc.theWorld.isAirBlock(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 0.1, mc.thePlayer.posZ)) && mc.thePlayer.motionY > 0) {
+    vClip(module.settings.TPDistance.get())
+    } 	
+    }
+    
+    if (module.settings.M.get() == "Motion") {
+    if (mc.thePlayer.isOnLadder() && mc.gameSettings.keyBindForward.pressed && !mc.theWorld.isAirBlock(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 0.1, mc.thePlayer.posZ)) && mc.thePlayer.motionY > 0) {
+    mc.thePlayer.motionY *= module.settings.MotionY.get()
+    }
+    }
+    });
+});
+
+var jump;
+
+script.registerModule({
+    name: "LongJumpzz",
+    description: "Left click + web = disable matrix lmao",
+    category: "Fun",
+    settings: {
+		XZBoost: Setting.float({
+			name: "XZBoost",
+			default: 4.7,
+			min:0.5,
+			max:5
+		}),
+		YBoost: Setting.float({
+			name: "YBoost",
+			default: 1,
+			min:0.5,
+			max:4
+		}),
+    }
+
+}, function (module) {
+    module.on("enable", function () {
+    jump = 0
+    });
+    module.on("disable", function () {
+    });
+    module.on("update", function () {
+    if (mc.thePlayer.onGround) {	
+    mc.thePlayer.motionY = module.settings.YBoost.get()
+    setYeet(module.settings.XZBoost.get())
+    jump = 1
+    }
+    
+    if (jump == 1 && mc.thePlayer.onGround) {
+    module.setState(false)	
+    jump = 0;
+    }
+    });
+});
+
+var send;
+var targetX;
+var targetY;
+var targetZ;
+
+script.registerModule({
+    name: "WebTP",
+    description: "Nutting in cats is illegal",
+    category: "Fun",
+    settings: {}
+
+}, function (module) {
+    module.on("enable", function () {
+    send = false;
+    Reach.setState(true);
+	moduleManager.getModule("Reach").getValue("buildreach").set(500);
+	moduleManager.getModule("Reach").getValue("combatreach").set(moduleManager.getModule("KillAura").getValue("Range").get());
+    });
+    module.on("disable", function () {
+    Reach.setState(false);
+    });
+    module.on("packet", function (e) {
+    var packet = e.getPacket();	
+    if (send == true && packet instanceof C04 && mc.thePlayer.isInWeb) {
+    packet.x = targetX
+    packet.y = targetY+1
+    packet.z = targetZ
+    }
+    });
+    module.on("update", function () {	
+    	
+    if (!mc.thePlayer.isInWeb) {
+    module.setState(false);
+    Chat.print("§8§l[§c§lJS§8§l]§7 You are not in a§c§l Web");
+    }	
+    
+    if (mc.thePlayer.posX == targetX && mc.thePlayer.posZ == targetZ && mc.thePlayer.posY == targetY+1) {
+    module.setState(false);
+    send = false;
+    }
+    });
+    module.on("clickBlock", function (e) {
+    if (send == false) {	
+    tp = e.getClickedBlock();		
+    targetX = tp.getX();
+    targetY = tp.getY();
+    targetZ = tp.getZ();
+    send = true;
+    }
+    });
+});
