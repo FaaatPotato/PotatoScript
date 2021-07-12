@@ -176,8 +176,8 @@ script.registerModule({
     module.on("update", function () {		
     	
     if (module.settings.U.get()) {
-    createNewFile(name + ".js;	
-    writeIn(name + ".js;
+    createNewFile(name + ".js");	
+    writeIn(name + ".js");
     module.settings.U.set(false);
     Chat.print("§8§l[§c§lJS§8§l]");
     Chat.print("§8§l[§c§lJS§8§l]§7 type §8.scriptmanager reload§7 to reload the script!");
