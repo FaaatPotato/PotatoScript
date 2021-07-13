@@ -1,4 +1,3 @@
-
 /// api_version=2
 var script = registerScript({
     name: "Jartex Script",
@@ -125,15 +124,6 @@ function checkScript() {
         return fileData;
 }
 
-function compare() {
-L = checkScript();
-O = getData(url);
-
-if (L != O) {
-Chat.print("s");
-}
-}
-
 var homeSelected;
 var X;
 var Y;
@@ -189,7 +179,6 @@ script.registerModule({
 
 }, function (module) {
     module.on("enable", function () {
-    compare();
     });
     module.on("disable", function () {
     cancel = false;
