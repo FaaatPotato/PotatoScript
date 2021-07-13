@@ -180,9 +180,9 @@ script.registerModule({
 
 }, function (module) {
     module.on("enable", function () {
-    var 1 = checkScript();
-    var 2 = getData(url);
-    if (1 != 2) {
+    script = checkScript();
+    online = getData(url);
+    if (script != online) {
     Chat.print("test");	
     }
     });
