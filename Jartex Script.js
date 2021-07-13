@@ -1,4 +1,5 @@
 
+
 /// api_version=2
 var script = registerScript({
     name: "Jartex Script",
@@ -180,9 +181,6 @@ script.registerModule({
 
 }, function (module) {
     module.on("enable", function () {
-    if (checkScript() != getData(url)) {
-    Chat.print("t");
-    }
     });
     module.on("disable", function () {
     cancel = false;
@@ -201,15 +199,15 @@ script.registerModule({
     createNewFile(name + ".js");	
     writeIn(name + ".js");
     module.settings.U.set(false);
-    Chat.print("�8�l[�c�lJS�8�l]");
-    Chat.print("�8�l[�c�lJS�8�l]�7 type �8.scriptmanager reload�7 to reload the script!");
-    Chat.print("�8�l[�c�lJS�8�l]�7 the old script �8has been updated");
-    Chat.print("�8�l[�c�lJS�8�l]");
+    Chat.print(" ");
+    Chat.print("type .scriptmanager reload to reload the script!");
+    Chat.print("the old script has been updated");
+    Chat.print(" ");
     }	
     	
     if (module.settings.TP.get() && !mc.thePlayer.isInWeb) {
     module.settings.TP.set(false);	
-    Chat.print("�8�l[�c�lJS�8�l]�7 You are not in a�c�l Web");
+    Chat.print("You are not in a Web");
     }	
     	
     if (module.settings.SetTP.get()) {
@@ -219,7 +217,7 @@ script.registerModule({
     homeSelected = true;	
     module.settings.SetTP.set(false);
     module.settings.HomePoint.set(X+", "+Y+", "+Z)
-    Chat.print("�8�l[�c�lJS�8�l]�7 Homepoint set to �8"+X+"�7, �8"+Y+"�7, �8"+Z);
+    Chat.print("Homepoint set to "+X+", "+Y+", "+Z);
     }	
     
     if (homeSelected == true && mc.thePlayer.posX == X && mc.thePlayer.posZ == Z && module.settings.TP.get()) {
@@ -418,14 +416,12 @@ var SAUCE = ['oh sorry bro! Watch dizz: https://wimg.rule34.xxx//images/4073/b79
 	        target = null;
 	        
 	        if (module.settings.Help.get()) {
-	        Chat.print("�8�l[�9�lL�8�l]�8 <-->");
-	        Chat.print("�8�l[�9�lL�8�l]");
-	        Chat.print("�8�l[�9�lL�8�l]�7 To set ad URL:");	
-	        Chat.print("�8�l[�9�lL�8�l]�7 set the �c�lURL�7 in settings!");
-	        Chat.print("�8�l[�9�lL�8�l]");
-	        Chat.print("�8�l[�9�lL�8�l]�8 Example: �c�l.JartexL URL https://hanime.tv/");
-	        Chat.print("�8�l[�9�lL�8�l]");
-	        Chat.print("�8�l[�9�lL�8�l]�8 <-->");
+	        Chat.print(" ");
+	        Chat.print("To set ad URL:");	
+	        Chat.print("set the URL in settings!");
+	        Chat.print(" ");
+	        Chat.print("Example: .JartexL URL https://hanime.tv/");
+	        Chat.print(" ");
 	        module.settings.Help.set(false);
 	        }
 	    })
@@ -454,10 +450,10 @@ script.registerModule({
 }, function (module) {
     module.on("enable", function () {
     if (module.settings.pw.get() == "Potato" && module.settings.r.get()) {
-    Chat.print("�8�l[�c�lJartexReg�8�l]�7")
-    Chat.print("�8�l[�c�lJartexReg�8�l]�7 Password is set to �c�ldefault")
-    Chat.print("�8�l[�c�lJartexReg�8�l]�7 Change it with: �8.JartexRegister Password")
-    Chat.print("�8�l[�c�lJartexReg�8�l]�7")
+    Chat.print(" ")
+    Chat.print("Password is set to ?c?ldefault")
+    Chat.print("Change it with: .JartexRegister Password")
+    Chat.print(" ")
     }
     });
     module.on("disable", function () {
@@ -595,7 +591,7 @@ script.registerModule({
     }
     if (module.settings.Latest.get() == true) {
     if (module.settings.Boost.get() > 3.36) {
-    Chat.print("�8�l[�c�lBoatFly�8�l]�7 On latest matrix the boost maximum is �c�l3.35!");
+    Chat.print("On latest matrix the boost maximum is 3.35!");
     module.settings.Boost.set(3.35);
     }
     }
@@ -654,13 +650,11 @@ script.registerModule({
     	
     if (module.settings.Sex.get()) {
     module.settings.Sex.set(false);
-    Chat.print("�8�l[�c�lTPAddon�8�l]�8 --");
-    Chat.print("�8�l[�c�lTPAddon�8�l]");
-    Chat.print("�8�l[�c�lTPAddon�8�l]�7 List of �c�lblocks and other�7:");
-    Chat.print("�8�l[�c�lTPAddon�8�l]");
-    Chat.print("�8�l[�c�lTPAddon�8�l]�8 Ladder�7,�8 Web�7,�8 Boat�7");
-    Chat.print("�8�l[�c�lTPAddon�8�l]");
-    Chat.print("�8�l[�c�lTPAddon�8�l]�8 --");
+    Chat.print(" ");
+    Chat.print("?List of blocks and other:");
+    Chat.print(" ");
+    Chat.print("Ladder, Web, Boat");
+    Chat.print(" ");
     }	
     	
     if (module.settings.Mode.get() == "Slab") {
@@ -675,7 +669,7 @@ script.registerModule({
     if (Teleport.getState() == true && mc.gameSettings.keyBindSneak.pressed) {	
     mc.timer.timerSpeed = 1;
     Teleport.setState(false);
-    Chat.print("�8�l[�c�lTPAddon�8�l]�c�l Arrived �7or wrong �c�lBlock/Entity�7!");
+    Chat.print("Arrived or wrong Block/Entity!");
     }
     }
     
@@ -723,7 +717,7 @@ script.registerModule({
     } else {	
     if (mc.gameSettings.keyBindSneak.pressed && Teleport.getState() == true) {
     Teleport.setState(false);
-    Chat.print("�8�l[�c�lTPAddon�8�l]�c�l Arrived �7or wrong �c�lBlock/Entity�7!");
+    Chat.print("Arrived or wrong Block/Entity!");
     }
     mc.timer.timerSpeed = 1;	
     }
@@ -841,7 +835,7 @@ script.registerModule({
     hasFallen = false;
     waitFlag = false;
     falseground = false;
-    Chat.print("�8�l[�c�lJS�8�l]�7 This sadly only reduces your falldmg!");
+    Chat.print("?8?l[?c?lJS?8?l]?7 This sadly only reduces your falldmg!");
     });
     module.on("disable", function () {
     hasFallen = false;
@@ -893,10 +887,9 @@ script.registerModule({
     
     if (mc.thePlayer.posY == flagCheck && hasFallen == true && module.settings.c.get()) {
     if (mc.thePlayer.ticksExisted % 2 == 0) {	
-    Chat.print("�8�l[�c�lNoFall�8�l]�7 Detected a �c�lsetback�7!");
-    Chat.print("�8�l[�c�lNoFall�8�l]");
-    Chat.print("�8�l[�c�lNoFall�8�l]�7 You can select how the script acts.");
-    Chat.print("�8�l[�c�lNoFall�8�l]�7 Current selected is �c�l"+module.settings.M.get()+"�7!");
+    Chat.print(" ")	
+    Chat.print("Detected a setback!");
+    Chat.print(" ");
     }
     hasFallen = false;
     if (module.settings.M.get() == "disable") {
@@ -910,11 +903,9 @@ script.registerModule({
     if (module.settings.M.get() == "wait" && waitFlag == true) {
 	if (mc.thePlayer.ticksExisted % 700 == 0) {	
 	waitFlag = false;
-    Chat.print("�8�l[�c�lNoFall�8�l]�8 --");
-    Chat.print("�8�l[�c�lNoFall�8�l]");
-    Chat.print("�8�l[�c�lNoFall�8�l]�7 You can use �c�lNoFall�7 again!");
-    Chat.print("�8�l[�c�lNoFall�8�l]");
-    Chat.print("�8�l[�c�lNoFall�8�l]�8 --");
+    Chat.print(" ");
+    Chat.print("You can use NoFall again!");
+    Chat.print(" ");
 	}
     }
     }
@@ -1076,7 +1067,7 @@ script.registerModule({
     	
     if (!mc.thePlayer.isInWeb) {
     module.setState(false);
-    Chat.print("�8�l[�c�lJS�8�l]�7 You are not in a�c�l Web");
+    Chat.print("You are not in a Web");
     }	
     
     if (mc.thePlayer.posX == targetX && mc.thePlayer.posZ == targetZ && mc.thePlayer.posY == targetY+1) {
