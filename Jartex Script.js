@@ -1,3 +1,4 @@
+
 /// api_version=2
 var script = registerScript({
     name: "Jartex Script",
