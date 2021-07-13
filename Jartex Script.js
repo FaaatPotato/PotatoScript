@@ -62,7 +62,7 @@ function setYeet(_yeet) {
 
 var url = "https://raw.githubusercontent.com/FaaatPotato/Scripts/main/Jartex%20Script.js";
 var name = "JartexScript";
-
+var pName = "JartexScript.js";
 
 var URL = Java.type("java.net.URL");
 var BufferedReader = Java.type("java.io.BufferedReader");
