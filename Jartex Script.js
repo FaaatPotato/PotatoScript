@@ -180,9 +180,11 @@ script.registerModule({
 
 }, function (module) {
     module.on("enable", function () {
-    if (checkScript() != getData(url)) {
+    var 1 = checkScript();
+    var 2 = getData(url);
+    if (1 != 2) {
     Chat.print("test");	
-    }	
+    }
     });
     module.on("disable", function () {
     cancel = false;
