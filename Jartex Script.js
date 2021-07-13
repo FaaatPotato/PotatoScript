@@ -110,7 +110,7 @@ function writeIn(name, msg) {
 	}
 }
 
-function checkForChanges() {
+function checkScript() {
 
 		var a = new File(mc.mcDataDir, "LiquidBounce-1.8");
 		var b = new File(a, "scripts");
@@ -176,15 +176,11 @@ script.registerModule({
             name: "UseKeyBinds",
             default: true
 		}),
-        Test: Setting.boolean({
-            name: "sex",
-            default: false
-		}),
     }
 
 }, function (module) {
     module.on("enable", function () {
-    if (getData(url) != checkForChanges()) {
+    if (checkScript() != getData(url)) {
     Chat.print("test");	
     }	
     });
