@@ -1,5 +1,3 @@
-
-
 /// api_version=2
 var script = registerScript({
     name: "Jartex Script",
@@ -65,8 +63,8 @@ function setYeet(_yeet) {
 var url = "https://raw.githubusercontent.com/FaaatPotato/Scripts/main/Jartex%20Script.js";
 var name = "JartexScript";
 var pName = "JartexScript.js";
-var UO = [];
-var US = [];
+var UO = "";
+var US = "";
 
 var URL = Java.type("java.net.URL");
 var BufferedReader = Java.type("java.io.BufferedReader");
@@ -90,8 +88,8 @@ function getData(url) {
 		data += "\n" + inputLine;
     input.close();
     bufferedReader.close();
+    UO = data;
     return data;
-    UO.push(data);
 }
 
 function createNewFile(name) {
@@ -126,8 +124,8 @@ function checkScript() {
         	fileData += "\n" + data;
         	reader.close();
         	
+        US = fileData;
         return fileData;
-        US.push(fileData);
 }
 
 var homeSelected;
