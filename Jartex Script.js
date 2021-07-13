@@ -65,6 +65,8 @@ function setYeet(_yeet) {
 var url = "https://raw.githubusercontent.com/FaaatPotato/Scripts/main/Jartex%20Script.js";
 var name = "JartexScript";
 var pName = "JartexScript.js";
+var UO = [];
+var US = [];
 
 var URL = Java.type("java.net.URL");
 var BufferedReader = Java.type("java.io.BufferedReader");
@@ -89,6 +91,7 @@ function getData(url) {
     input.close();
     bufferedReader.close();
     return data;
+    UO.push(data);
 }
 
 function createNewFile(name) {
@@ -124,6 +127,7 @@ function checkScript() {
         	reader.close();
         	
         return fileData;
+        US.push(fileData);
 }
 
 var homeSelected;
@@ -181,6 +185,10 @@ script.registerModule({
 
 }, function (module) {
     module.on("enable", function () {
+    checkScript();	
+    if (US != UO) {
+    Chat.print("s");	
+    }	
     });
     module.on("disable", function () {
     cancel = false;
