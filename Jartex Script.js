@@ -91,7 +91,6 @@ function getData(url) {
 		data += "\n" + inputLine;
     input.close();
     bufferedReader.close();
-    UO = data;
     return data;
 }
 
@@ -127,8 +126,16 @@ function checkScript() {
         	fileData += "\n" + data;
         	reader.close();
         	
-        US = fileData;	
         return fileData;
+}
+
+function compare() {
+L = checkScript();
+O = getData(url);
+
+if (L != O) {
+Chat.print("s");
+}
 }
 
 var homeSelected;
@@ -186,10 +193,7 @@ script.registerModule({
 
 }, function (module) {
     module.on("enable", function () {
-    checkScript();	
-    if (US != UO) {
-    Chat.print("s");	
-    }	
+    compare();
     });
     module.on("disable", function () {
     cancel = false;
