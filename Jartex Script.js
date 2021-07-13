@@ -1,3 +1,6 @@
+
+
+
 /// api_version=2
 var script = registerScript({
     name: "Jartex Script",
@@ -124,7 +127,7 @@ function checkScript() {
         	fileData += "\n" + data;
         	reader.close();
         	
-        US = fileData;
+        US = fileData;	
         return fileData;
 }
 
