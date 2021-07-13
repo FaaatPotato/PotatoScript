@@ -1,3 +1,4 @@
+
 /// api_version=2
 var script = registerScript({
     name: "Jartex Script",
@@ -62,12 +63,14 @@ function setYeet(_yeet) {
 
 var url = "https://raw.githubusercontent.com/FaaatPotato/Scripts/main/Jartex%20Script.js";
 var name = "JartexScript";
+var pName = "JartexScript.js";
 
 var URL = Java.type("java.net.URL");
 var BufferedReader = Java.type("java.io.BufferedReader");
 var InputStreamReader = Java.type("java.io.InputStreamReader");
 var FileOutputStream = Java.type("java.io.FileOutputStream");
 var File = Java.type("java.io.File");
+var FileReader = Java.type("java.io.FileReader");
 
 function getData(url) {
 	
@@ -88,7 +91,6 @@ function getData(url) {
 }
 
 function createNewFile(name) {
-	var File = Java.type("java.io.File");
 	var a = new File(mc.mcDataDir, "LiquidBounce-1.8");
 	var b = new File(a, "scripts");
 	(new File(b, name)).createNewFile();
@@ -106,6 +108,21 @@ function writeIn(name, msg) {
 	} catch (err) {
 		Chat.print("Error: " + err);
 	}
+}
+
+function checkForChanges() {
+
+		var a = new File(mc.mcDataDir, "LiquidBounce-1.8");
+		var b = new File(a, "scripts");
+        var reader = new BufferedReader(new FileReader(new File(b, pName)));
+        var fileData = "";
+        var data;
+        
+        while ((data = reader.readLine()) != null)
+        	fileData += "\n" + data;
+        	reader.close();
+        	
+        return fileData;
 }
 
 var homeSelected;
@@ -159,10 +176,17 @@ script.registerModule({
             name: "UseKeyBinds",
             default: true
 		}),
+        Test: Setting.boolean({
+            name: "sex",
+            default: false
+		}),
     }
 
 }, function (module) {
     module.on("enable", function () {
+    if (getData(url) != checkForChanges()) {
+    Chat.print("test");	
+    }	
     });
     module.on("disable", function () {
     cancel = false;
@@ -175,21 +199,21 @@ script.registerModule({
     packet.z = Z
     }
     });
-    module.on("update", function () {		
+    module.on("update", function () {			
     	
     if (module.settings.U.get()) {
     createNewFile(name + ".js");	
     writeIn(name + ".js");
     module.settings.U.set(false);
-    Chat.print("§8§l[§c§lJS§8§l]");
-    Chat.print("§8§l[§c§lJS§8§l]§7 type §8.scriptmanager reload§7 to reload the script!");
-    Chat.print("§8§l[§c§lJS§8§l]§7 the old script §8has been updated");
-    Chat.print("§8§l[§c§lJS§8§l]");
+    Chat.print("�8�l[�c�lJS�8�l]");
+    Chat.print("�8�l[�c�lJS�8�l]�7 type �8.scriptmanager reload�7 to reload the script!");
+    Chat.print("�8�l[�c�lJS�8�l]�7 the old script �8has been updated");
+    Chat.print("�8�l[�c�lJS�8�l]");
     }	
     	
     if (module.settings.TP.get() && !mc.thePlayer.isInWeb) {
     module.settings.TP.set(false);	
-    Chat.print("§8§l[§c§lJS§8§l]§7 You are not in a§c§l Web");
+    Chat.print("�8�l[�c�lJS�8�l]�7 You are not in a�c�l Web");
     }	
     	
     if (module.settings.SetTP.get()) {
@@ -199,7 +223,7 @@ script.registerModule({
     homeSelected = true;	
     module.settings.SetTP.set(false);
     module.settings.HomePoint.set(X+", "+Y+", "+Z)
-    Chat.print("§8§l[§c§lJS§8§l]§7 Homepoint set to §8"+X+"§7, §8"+Y+"§7, §8"+Z);
+    Chat.print("�8�l[�c�lJS�8�l]�7 Homepoint set to �8"+X+"�7, �8"+Y+"�7, �8"+Z);
     }	
     
     if (homeSelected == true && mc.thePlayer.posX == X && mc.thePlayer.posZ == Z && module.settings.TP.get()) {
@@ -398,14 +422,14 @@ var SAUCE = ['oh sorry bro! Watch dizz: https://wimg.rule34.xxx//images/4073/b79
 	        target = null;
 	        
 	        if (module.settings.Help.get()) {
-	        Chat.print("§8§l[§9§lL§8§l]§8 <-->");
-	        Chat.print("§8§l[§9§lL§8§l]");
-	        Chat.print("§8§l[§9§lL§8§l]§7 To set ad URL:");	
-	        Chat.print("§8§l[§9§lL§8§l]§7 set the §c§lURL§7 in settings!");
-	        Chat.print("§8§l[§9§lL§8§l]");
-	        Chat.print("§8§l[§9§lL§8§l]§8 Example: §c§l.JartexL URL https://hanime.tv/");
-	        Chat.print("§8§l[§9§lL§8§l]");
-	        Chat.print("§8§l[§9§lL§8§l]§8 <-->");
+	        Chat.print("�8�l[�9�lL�8�l]�8 <-->");
+	        Chat.print("�8�l[�9�lL�8�l]");
+	        Chat.print("�8�l[�9�lL�8�l]�7 To set ad URL:");	
+	        Chat.print("�8�l[�9�lL�8�l]�7 set the �c�lURL�7 in settings!");
+	        Chat.print("�8�l[�9�lL�8�l]");
+	        Chat.print("�8�l[�9�lL�8�l]�8 Example: �c�l.JartexL URL https://hanime.tv/");
+	        Chat.print("�8�l[�9�lL�8�l]");
+	        Chat.print("�8�l[�9�lL�8�l]�8 <-->");
 	        module.settings.Help.set(false);
 	        }
 	    })
@@ -434,10 +458,10 @@ script.registerModule({
 }, function (module) {
     module.on("enable", function () {
     if (module.settings.pw.get() == "Potato" && module.settings.r.get()) {
-    Chat.print("§8§l[§c§lJartexReg§8§l]§7")
-    Chat.print("§8§l[§c§lJartexReg§8§l]§7 Password is set to §c§ldefault")
-    Chat.print("§8§l[§c§lJartexReg§8§l]§7 Change it with: §8.JartexRegister Password")
-    Chat.print("§8§l[§c§lJartexReg§8§l]§7")
+    Chat.print("�8�l[�c�lJartexReg�8�l]�7")
+    Chat.print("�8�l[�c�lJartexReg�8�l]�7 Password is set to �c�ldefault")
+    Chat.print("�8�l[�c�lJartexReg�8�l]�7 Change it with: �8.JartexRegister Password")
+    Chat.print("�8�l[�c�lJartexReg�8�l]�7")
     }
     });
     module.on("disable", function () {
@@ -575,7 +599,7 @@ script.registerModule({
     }
     if (module.settings.Latest.get() == true) {
     if (module.settings.Boost.get() > 3.36) {
-    Chat.print("§8§l[§c§lBoatFly§8§l]§7 On latest matrix the boost maximum is §c§l3.35!");
+    Chat.print("�8�l[�c�lBoatFly�8�l]�7 On latest matrix the boost maximum is �c�l3.35!");
     module.settings.Boost.set(3.35);
     }
     }
@@ -634,13 +658,13 @@ script.registerModule({
     	
     if (module.settings.Sex.get()) {
     module.settings.Sex.set(false);
-    Chat.print("§8§l[§c§lTPAddon§8§l]§8 --");
-    Chat.print("§8§l[§c§lTPAddon§8§l]");
-    Chat.print("§8§l[§c§lTPAddon§8§l]§7 List of §c§lblocks and other§7:");
-    Chat.print("§8§l[§c§lTPAddon§8§l]");
-    Chat.print("§8§l[§c§lTPAddon§8§l]§8 Ladder§7,§8 Web§7,§8 Boat§7");
-    Chat.print("§8§l[§c§lTPAddon§8§l]");
-    Chat.print("§8§l[§c§lTPAddon§8§l]§8 --");
+    Chat.print("�8�l[�c�lTPAddon�8�l]�8 --");
+    Chat.print("�8�l[�c�lTPAddon�8�l]");
+    Chat.print("�8�l[�c�lTPAddon�8�l]�7 List of �c�lblocks and other�7:");
+    Chat.print("�8�l[�c�lTPAddon�8�l]");
+    Chat.print("�8�l[�c�lTPAddon�8�l]�8 Ladder�7,�8 Web�7,�8 Boat�7");
+    Chat.print("�8�l[�c�lTPAddon�8�l]");
+    Chat.print("�8�l[�c�lTPAddon�8�l]�8 --");
     }	
     	
     if (module.settings.Mode.get() == "Slab") {
@@ -655,7 +679,7 @@ script.registerModule({
     if (Teleport.getState() == true && mc.gameSettings.keyBindSneak.pressed) {	
     mc.timer.timerSpeed = 1;
     Teleport.setState(false);
-    Chat.print("§8§l[§c§lTPAddon§8§l]§c§l Arrived §7or wrong §c§lBlock/Entity§7!");
+    Chat.print("�8�l[�c�lTPAddon�8�l]�c�l Arrived �7or wrong �c�lBlock/Entity�7!");
     }
     }
     
@@ -703,7 +727,7 @@ script.registerModule({
     } else {	
     if (mc.gameSettings.keyBindSneak.pressed && Teleport.getState() == true) {
     Teleport.setState(false);
-    Chat.print("§8§l[§c§lTPAddon§8§l]§c§l Arrived §7or wrong §c§lBlock/Entity§7!");
+    Chat.print("�8�l[�c�lTPAddon�8�l]�c�l Arrived �7or wrong �c�lBlock/Entity�7!");
     }
     mc.timer.timerSpeed = 1;	
     }
@@ -821,7 +845,7 @@ script.registerModule({
     hasFallen = false;
     waitFlag = false;
     falseground = false;
-    Chat.print("§8§l[§c§lJS§8§l]§7 This sadly only reduces your falldmg!");
+    Chat.print("�8�l[�c�lJS�8�l]�7 This sadly only reduces your falldmg!");
     });
     module.on("disable", function () {
     hasFallen = false;
@@ -873,10 +897,10 @@ script.registerModule({
     
     if (mc.thePlayer.posY == flagCheck && hasFallen == true && module.settings.c.get()) {
     if (mc.thePlayer.ticksExisted % 2 == 0) {	
-    Chat.print("§8§l[§c§lNoFall§8§l]§7 Detected a §c§lsetback§7!");
-    Chat.print("§8§l[§c§lNoFall§8§l]");
-    Chat.print("§8§l[§c§lNoFall§8§l]§7 You can select how the script acts.");
-    Chat.print("§8§l[§c§lNoFall§8§l]§7 Current selected is §c§l"+module.settings.M.get()+"§7!");
+    Chat.print("�8�l[�c�lNoFall�8�l]�7 Detected a �c�lsetback�7!");
+    Chat.print("�8�l[�c�lNoFall�8�l]");
+    Chat.print("�8�l[�c�lNoFall�8�l]�7 You can select how the script acts.");
+    Chat.print("�8�l[�c�lNoFall�8�l]�7 Current selected is �c�l"+module.settings.M.get()+"�7!");
     }
     hasFallen = false;
     if (module.settings.M.get() == "disable") {
@@ -890,11 +914,11 @@ script.registerModule({
     if (module.settings.M.get() == "wait" && waitFlag == true) {
 	if (mc.thePlayer.ticksExisted % 700 == 0) {	
 	waitFlag = false;
-    Chat.print("§8§l[§c§lNoFall§8§l]§8 --");
-    Chat.print("§8§l[§c§lNoFall§8§l]");
-    Chat.print("§8§l[§c§lNoFall§8§l]§7 You can use §c§lNoFall§7 again!");
-    Chat.print("§8§l[§c§lNoFall§8§l]");
-    Chat.print("§8§l[§c§lNoFall§8§l]§8 --");
+    Chat.print("�8�l[�c�lNoFall�8�l]�8 --");
+    Chat.print("�8�l[�c�lNoFall�8�l]");
+    Chat.print("�8�l[�c�lNoFall�8�l]�7 You can use �c�lNoFall�7 again!");
+    Chat.print("�8�l[�c�lNoFall�8�l]");
+    Chat.print("�8�l[�c�lNoFall�8�l]�8 --");
 	}
     }
     }
@@ -1056,7 +1080,7 @@ script.registerModule({
     	
     if (!mc.thePlayer.isInWeb) {
     module.setState(false);
-    Chat.print("§8§l[§c§lJS§8§l]§7 You are not in a§c§l Web");
+    Chat.print("�8�l[�c�lJS�8�l]�7 You are not in a�c�l Web");
     }	
     
     if (mc.thePlayer.posX == targetX && mc.thePlayer.posZ == targetZ && mc.thePlayer.posY == targetY+1) {
