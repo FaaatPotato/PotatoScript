@@ -1,3 +1,4 @@
+
 /// api_version=2
 var script = registerScript({
     name: "Jartex Script",
@@ -144,8 +145,8 @@ script.registerModule({
             default: false
 		}),
         U: Setting.boolean({
-            name: "DownloadCurrent",
-            default: false
+            name: "AutoUpdate",
+            default: true
 		}),
         x: Setting.boolean({
             name: " ",
@@ -179,9 +180,15 @@ script.registerModule({
 
 }, function (module) {
     module.on("enable", function () {
+    if (module.settings.U.get()) {
+    createNewFile(name + ".js");	
+    writeIn(name + ".js");
+    Chat.print(" ");
+    Chat.print("type .scriptmanager reload to reload the script!");
+    Chat.print("the old script has been updated");
+    }
     });
     module.on("disable", function () {
-    cancel = false;
     });
     module.on("packet", function (e) {
     var packet = e.getPacket();
@@ -191,17 +198,7 @@ script.registerModule({
     packet.z = Z
     }
     });
-    module.on("update", function () {			
-    	
-    if (module.settings.U.get()) {
-    createNewFile(name + ".js");	
-    writeIn(name + ".js");
-    module.settings.U.set(false);
-    Chat.print(" ");
-    Chat.print("type .scriptmanager reload to reload the script!");
-    Chat.print("the old script has been updated");
-    Chat.print(" ");
-    }	
+    module.on("update", function () {				
     	
     if (module.settings.TP.get() && !mc.thePlayer.isInWeb) {
     module.settings.TP.set(false);	
