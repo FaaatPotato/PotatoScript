@@ -184,6 +184,9 @@ script.registerModule({
 
 }, function (module) {
     module.on("enable", function () {
+    if (!module.settings.U.get()) {
+    Update = false;	
+    }
     });
     module.on("disable", function () {
     });
@@ -196,7 +199,7 @@ script.registerModule({
     }
     });
     module.on("update", function () {				
-    	
+    		
     if (Update == true && module.settings.U.get()) {
     createNewFile(name + ".js");	
     writeIn(name + ".js");
@@ -205,7 +208,7 @@ script.registerModule({
     Chat.print("the old script has been updated");	
     Chat.print(" ");
     Update = false;
-    }	
+    }
     	
     if (module.settings.TP.get() && !mc.thePlayer.isInWeb) {
     module.settings.TP.set(false);	
