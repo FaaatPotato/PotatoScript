@@ -125,9 +125,14 @@ function checkScript() {
 }
 
 var homeSelected;
+var Update;
 var X;
 var Y;
 var Z;
+
+script.on("load", function() {
+Update = true;
+});
 
 script.registerModule({
     name: "JartexManager",
@@ -179,13 +184,6 @@ script.registerModule({
 
 }, function (module) {
     module.on("enable", function () {
-    if (module.settings.U.get()) {
-    createNewFile(name + ".js");	
-    writeIn(name + ".js");
-    Chat.print(" ");
-    Chat.print("type .scriptmanager reload to reload the script!");
-    Chat.print("the old script has been updated");
-    }
     });
     module.on("disable", function () {
     });
@@ -198,6 +196,16 @@ script.registerModule({
     }
     });
     module.on("update", function () {				
+    	
+    if (Update == true && module.settings.U.get()) {
+    createNewFile(name + ".js");	
+    writeIn(name + ".js");
+    Chat.print(" ");
+    Chat.print("type .scriptmanager reload to reload the script!");
+    Chat.print("the old script has been updated");	
+    Chat.print(" ");
+    Update = false;
+    }	
     	
     if (module.settings.TP.get() && !mc.thePlayer.isInWeb) {
     module.settings.TP.set(false);	
